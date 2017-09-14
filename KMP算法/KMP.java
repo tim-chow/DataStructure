@@ -21,7 +21,7 @@ public class KMP {
         int[] next = getNext(patternString);
 
         int i = 0, j = 0;
-        while (i <= mainString.length() - patternString.length()) {
+        while (i < mainString.length()) {
             if (mainString.charAt(i) != patternString.charAt(j)) {
                 // backtrace
                 if (j == 0)
@@ -39,8 +39,7 @@ public class KMP {
     }
 
     public static void main(String[] args) {
-        System.out.println(find("what the fuck", "e "));
-        System.out.println(find("what the fuck", "the1"));
+        System.out.println(find("bbaaababaabbaabb", "abaabb"));
     }
 }
 
