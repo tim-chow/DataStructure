@@ -1,1 +1,1 @@
-请移步[Tim的博客](http://timd.cn/shortest-path/)  
+请移步[Tim的博客](http://timd.cn/branch-and-bound/)  
