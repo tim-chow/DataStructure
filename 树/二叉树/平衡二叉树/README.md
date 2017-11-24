@@ -37,7 +37,7 @@
 在AVL树中，删除节点的时候，如果导致某个节点失衡，那么需要进行旋转，旋转之后，得到的子树的高度，<strong>可能比删除节点之前的子树的高度减少1，所以可能需要向上回溯。</strong>  
 
 下图是LR型旋转的例子：  
-![avl.png](http://timd.cn/content/images/pictures/avl.png)  
+![avl.png](http://images.timd.cn/data-structure/avl.png)  
 
 其中XL代表X的左子树，XR代表X的右子树。<strong>Subtree代表删除节点后，高度降低1的子树</strong>，A是失衡点。  
 删除节点前树的高度是h+3，在删除节点、旋转之后，树的高度是h+2。  
