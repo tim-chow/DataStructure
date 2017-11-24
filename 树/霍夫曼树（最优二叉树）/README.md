@@ -15,14 +15,14 @@
 
 ### 霍夫曼树  
 带权路径长度最小的二叉树，就叫霍夫曼树，也叫最优二叉树。  
-![huffman.gif](http://timd.cn/content/images/pictures/huffman.gif)  
+![huffman.gif](http://images.timd.cn/data-structure/huffman.gif)  
 
 ---
 
 ### 霍夫曼编码
 
 规定：霍夫曼树中，所有左分支都表示0，所有右分支都表示1。然后将从根节点到每个叶子节点所经过的分支的二进制位作为该节点的编码。因为在树中，一条路径不可能经过2个叶子节点，所以，霍夫曼编码一定是前缀编码（任意字符的编码都不是其他字符的编码的前缀）  
-![huffman-2.gif](http://timd.cn/content/images/pictures/huffman-2.gif)  
+![huffman-2.gif](http://images.timd.cn/data-structure/huffman-2.gif)  
 
 ---
 
