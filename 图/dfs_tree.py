@@ -79,6 +79,9 @@ def dfs_tree(vertexes, edges):
             continue
         status[top] = status[top] + 1
         parent[adjacent_index] = top
+        # 剪枝
+        if visited[adjacent_index] == True:
+            continue
         stack.append(adjacent_index)
     return root
 
@@ -86,14 +89,19 @@ if __name__ == "__main__":
     vertexes = range(4) 
     edges = [[None] * 4, [None] * 4, [None] * 4, [None] * 4]
     edges[0][1] = 1
+    edges[1][0] = 1
     edges[0][3] = 3
-    edges[3][2] = 3
+    edges[3][0] = 3
+    edges[2][3] = 23
+    edges[3][2] = 23
     import pprint
     pprint.pprint(edges)
 
     root = Node(0)
     visited = [False for _ in range(len(vertexes))]
     dfs_tree_recursive(0, root, visited, vertexes, edges)
+
+    root = dfs_tree(vertexes, edges)
 
     print root.get_data()
     first_child = root.get_first_child()
