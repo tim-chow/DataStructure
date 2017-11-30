@@ -45,13 +45,14 @@ class TrieNode {
 
     private TrieNode setFailPointers() {
         List<TrieNode> queue = new LinkedList<>();
-        queue.add(this.setFail(this)); // 根节点的fail指针指向自己
-        TrieNode node, fail;
+        queue.add(this.setFail(null)); // 根节点的fail指针指向null
+        TrieNode node, fail, temp;
 
         while (queue.size() > 0) {
             node = queue.remove(0);
 
             for (Map.Entry<Character, TrieNode> entry: node.children.entrySet()) {
+                Character character = entry.getKey();
                 TrieNode childTrieNode = entry.getValue();
                 queue.add(childTrieNode);
                 childTrieNode.setFail(this);
@@ -60,8 +61,14 @@ class TrieNode {
                 if (node == this)
                     continue;
 
-                if ((fail = node.getFail().getCharacter(entry.getKey())) != null)
-                    childTrieNode.setFail(fail);
+                fail = node.getFail();
+                while (fail != null) {
+                    if ((temp = fail.getCharacter(character)) != null) {
+                        childTrieNode.setFail(temp);
+                        break;
+                    }
+                    fail = fail.getFail();
+                }
             }
         }
         return this;
@@ -96,7 +103,7 @@ class TrieNode {
     private List<String> getOutput(Map<TrieNode, String> output, TrieNode node) {
         List<String> result = new LinkedList<>();
 
-        while (node != this) {
+        while (node != null) {
             if (node.getEnd())
                 result.add(output.get(node));
             node = node.getFail();
@@ -113,11 +120,15 @@ class TrieNode {
         int ind = 0, length = mainString.length();
         while (ind < length) {
             nextNode = node.getCharacter(character = mainString.charAt(ind));
-            while (nextNode == null && node != this) {
-                nextNode = (node = node.getFail()).getCharacter(character);
+            while (nextNode == null) {
+                node = node.getFail();
+                if (node == null)
+                    break;
+                nextNode = node.getCharacter(character);
             }
             ind++;
-            if (nextNode == null && node == this) {
+            if (nextNode == null && node == null) {
+                node = this;
                 continue;
             }
             node = nextNode;
@@ -142,9 +153,9 @@ class TrieNode {
 public class AC {
     public static void main(String[] args) {
         List<String> words = Arrays.asList(new String[]{
-            "say", "she", "shr", "he", "her"
+            "say", "she", "shr", "he", "her", "a"
         });
-        System.out.println(TrieNode.find("shesaysherdogisweak", words));
+        System.out.println(TrieNode.find("shesaysherdogisdadahesdshehererweak", words));
     }
 }
 
