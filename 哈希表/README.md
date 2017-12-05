@@ -39,6 +39,7 @@ H(key) = key MOD p, p &lt;= m
 * <strong style="color:red">链地址法</strong><br />
 将所有关键字为同义词的记录，存储到同一个线性表中，这个线性表就叫<strong>同义词子表</strong>，哈希表中只存储同义词子表的头节点。  
 <img src="http://images.timd.cn/data-structure/chainhash.png" alt="chainhash" />
+
 * <strong style="color:red">哈希桶</strong><br />
 为每个哈希值建立一个哈希桶（hash bucket），哈希桶的容量是固定的，所以哈希桶只能处理固定次数的冲突。哈希桶的思想和链地址法相似，都是为每个哈希值建立一个冲突表。  
 查询时，先根据记录的关键字 和 哈希函数，计算出哈希值，然后根据哈希值找到哈希桶，最后再遍历哈希桶。  
