@@ -46,4 +46,4 @@ H(key) = key MOD p, p &lt;= m
 查询时，先根据记录的关键字 和 哈希函数，计算出哈希值，然后根据哈希值找到哈希桶，最后再遍历哈希桶。  
 <img src="http://images.timd.cn/data-structure/hashbucket.png" alt="hashbucket.png" />
 
-
+java的HashMap实现，可以参考[这篇文档](http://www.importnew.com/16599.html)。  
