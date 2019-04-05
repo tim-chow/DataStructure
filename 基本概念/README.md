@@ -88,6 +88,7 @@ DataStructure = (D, S)
  ADT = (D, S, P)
  ```  
  其中，D是数据对象，S是D上的关系集，P是对D的操作集。  
+ 详情，可以参考：[这篇文档](https://www.xuebuyuan.com/3187404.html)。  
 
  ---
 
