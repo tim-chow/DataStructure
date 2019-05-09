@@ -43,6 +43,8 @@ k = 向下取整(log<sub>2</sub>n) + 1
 <h3>二叉树的遍历</h3>
 遍历二叉树是指<strong>按照某条搜索路径访问二叉树的节点，使得每个节点都被访问一次，且仅被访问一次</strong>。</br>
 <ul>
+	<li>深度优先遍历</br>
+	<ul>
 	<li><strong>先（根）序遍历</strong></br>
 		<ul>
 			<li>访问根节点</li>
@@ -63,6 +65,8 @@ k = 向下取整(log<sub>2</sub>n) + 1
 			<li>后序遍历右子树</li>
 			<li>访问根节点</li>
 		</ul>
+	</li>
+	</ul>
 	</li>
 	<li><strong>广度优先遍历（Breadth first search）</strong></br>
 	从上到下，从左到右按照层级进行遍历
