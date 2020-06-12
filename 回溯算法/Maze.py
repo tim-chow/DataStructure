@@ -2,8 +2,7 @@ class Node(object):
     def __init__(self, row, column, is_wall):
         self._row = row
         self._column = column
-        self._is_wall = is_wall
-
+        self._is_wall = bool(is_wall)
         self._next_nodes = []
         self._cursor = 0
 
@@ -20,28 +19,30 @@ class Node(object):
         return self._is_wall
 
     def add_next_node(self, next_node):
-        if isinstance(next_node, Node):
-            self._next_nodes.append(next_node)
-        return self
+        if not isinstance(next_node, Node):
+            raise RuntimeError("Node expected")
+        self._next_nodes.append(next_node)
 
     def get_next_node(self):
-        if not self._next_nodes or \
-            self._cursor >= len(self._next_nodes):
-            return 
-
+        if self._cursor >= len(self._next_nodes):
+            return
         node = self._next_nodes[self._cursor]
         self._cursor = self._cursor + 1
         return node
-
-    def __str__(self):
-        return "(%d, %d)" % (
-                self._row, self._column)
-    __repr__ = __str__
 
     def __eq__(self, o):
         if not isinstance(o, Node):
             return False
         return o.row == self.row and o.column == self.column
+
+    def __str__(self):
+        return "%s{row=%d, column=%d, is_wall=%s}" % (
+            self.__class__.__name__,
+            self.row,
+            self.column,
+            self._is_wall)
+    __repr__ = __str__
+
 
 def search(start, end):
     stack = [start]
@@ -49,7 +50,7 @@ def search(start, end):
     while stack:
         current_expand_node = stack[-1]
         next_node = current_expand_node.get_next_node()
-        if not next_node:
+        if next_node is None:
             stack.pop(-1)
             continue
 
@@ -57,19 +58,20 @@ def search(start, end):
             continue
 
         if next_node == end:
-            print ", ".join(map(str, stack + [next_node]))
+            print(stack + [next_node])
             continue
 
         stack.append(next_node)
+
 
 def main():
     # 0 means wall, 1 means road
     maze = [
         [0, 0, 0, 0, 0],
+        [1, 1, 1, 1, 0],
+        [1, 0, 0, 1, 0],
+        [1, 1, 0, 1, 0],
         [0, 1, 1, 1, 0],
-        [0, 0, 1, 1, 0],
-        [0, 1, 1, 1, 0],
-        [0, 0, 0, 0, 0],
     ]
 
     all_nodes = []
@@ -94,9 +96,8 @@ def main():
                 all_nodes[row][column].\
                     add_next_node(all_nodes[row][column+1])
 
-    __import__("pprint").pprint(maze)
     search(all_nodes[1][1], all_nodes[3][1])
+
 
 if __name__ == "__main__":
     main()
-
