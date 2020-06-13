@@ -19,7 +19,7 @@ class BagProblem(object):
     def calc(self, goods, total_weight):
         @self.cache
         def _calc(sequence_number, current_weight, chosen_goods):
-            if current_weight == total_weight or sequence_number == len(goods) - 1:
+            if current_weight == total_weight or sequence_number == len(goods):
                 return current_weight, chosen_goods[:]
 
             # 装不进去
@@ -33,7 +33,7 @@ class BagProblem(object):
             total_weight2, chosen2 = _calc(sequence_number + 1,
                                            current_weight + goods[sequence_number][0],
                                            chosen_goods + [goods[sequence_number]])
-            if total_weight1 > total_weight2:
+            if sum([v for _, v in chosen1]) > sum([v for _, v in chosen2]):
                 return total_weight1, chosen1
             return total_weight2, chosen2
         return _calc(0, 0, [])
@@ -42,6 +42,7 @@ class BagProblem(object):
 def test():
     bp = BagProblem()
     goods = [(3, 4), (2, 4), (5, 8), (7, 10), (3, 3), (8, 11)]
+    print(goods)
     total_weight = 15
     print(bp.calc(goods, total_weight))
 
