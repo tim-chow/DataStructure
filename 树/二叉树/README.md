@@ -63,35 +63,35 @@ k = 向下取整(log<sub>2</sub>n) + 1
 遍历二叉树是指<strong>按照某条搜索路径访问二叉树的节点，使得每个节点都被访问一次，且仅被访问一次</strong>。
 
 <ul>
-  <li>深度优先遍历（Depth First Search）</br>
-    <ul>
-      <li><strong>先（根）序遍历</strong><br />
-        <ul>
-          <li>访问根节点</li>
-          <li>先序遍历左子树</li>
-          <li>先序遍历右子树</li>
-        </ul>
-      </li>
+<li>深度优先遍历（Depth First Search）</br>
+<ul>
+<li><strong>先（根）序遍历</strong><br />
+<ul>
+<li>访问根节点</li>
+<li>先序遍历左子树</li>
+<li>先序遍历右子树</li>
+</ul>
+</li>
 
-      <li><strong>中（根）序遍历</strong><br />
-        <ul>
-          <li>中序遍历左子树</li>
-          <li>访问根节点</li>
-          <li>中序遍历右子树</li>
-        </ul>
-      </li>
+<li><strong>中（根）序遍历</strong><br />
+<ul>
+<li>中序遍历左子树</li>
+<li>访问根节点</li>
+<li>中序遍历右子树</li>
+</ul>
+</li>
 
-      <li><strong>后（根）序遍历</strong><br />
-        <ul>
-          <li>后序遍历左子树</li>
-          <li>后序遍历右子树</li>
-          <li>访问根节点</li>
-        </ul>
-      </li>
-    </ul>
-  </li>
+<li><strong>后（根）序遍历</strong><br />
+<ul>
+<li>后序遍历左子树</li>
+<li>后序遍历右子树</li>
+<li>访问根节点</li>
+</ul>
+</li>
+</ul>
+</li>
 
-  <li><strong>广度优先遍历（Breadth First Search）</strong><br />
+<li><strong>广度优先遍历（Breadth First Search）</strong><br />
 按照从上到下、从左到右的顺序逐层地进行遍历
-  </li>
+</li>
 </ul>
