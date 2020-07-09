@@ -1,33 +1,40 @@
-class SelectionSort:
-    @classmethod
-    def selection_sort(cls, array):
-        n = len(array)
-        for i in range(n/2):
-            start = i
-            end = n - i - 1
-            min, max = cls.select_min_and_max(array, start, end)
-            array[start], array[min] = array[min], array[start]
-            array[end], array[max] = array[max], array[end]
+# coding: utf8
 
-    @staticmethod
-    def select_min_and_max(array, start, end):
-        if start > end:
-            raise RuntimeError("start > end")
-        min = start
-        max = start
 
-        for ind in range(start, end+1):
-            if array[ind] < array[min]:
-                min = ind
-            if array[ind] > array[max]:
-                max = ind
-        return min, max
+def selection_sort(array):
+    n = len(array)
+    if n <= 1:
+        return
+
+    for i in range(1, n / 2 + 1):
+        min_index, max_index = \
+            select_min_and_max(array, i - 1, n - i)
+        array[i - 1], array[min_index] = \
+            array[min_index], array[i - 1]
+        array[n - i], array[max_index] = \
+            array[max_index], array[n - i]
+
+
+def select_min_and_max(array, start, end):
+    assert start < end
+    min_index = start
+    max_index = start
+
+    for ind in range(start + 1, end + 1):
+        if array[ind] <= array[min_index]:
+            min_index = ind
+        elif array[ind] >= array[max_index]:
+            max_index = ind
+
+    return min_index, max_index
+
 
 if __name__ == "__main__":
     import random
-    lst = range(20)
-    random.shuffle(lst)
-    print lst
-    SelectionSort.selection_sort(lst)
-    print lst
 
+    elements = list(range(20)) * 2
+    random.shuffle(elements)
+    print(elements)
+
+    selection_sort(elements)
+    print(elements)
