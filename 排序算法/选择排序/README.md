@@ -1,1 +1,1 @@
-请移步[蒂米的博客](http://timd.cn/2017/10/17/selection-sort/)。  
+请移步[ Tim 的博客](http://timd.cn/sort/selection-sort/)
