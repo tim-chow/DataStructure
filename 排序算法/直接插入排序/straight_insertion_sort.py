@@ -14,6 +14,7 @@ def straight_insertion_sort(array):
             for ind in range(i, j, -1):
                 array[ind] = array[ind - 1]
             array[j] = temp
+            break
 
 
 if __name__ == "__main__":
