@@ -1,32 +1,36 @@
-class ShellSort:
-    @staticmethod
-    def group_sort(array, gap):
-        n = len(array)
-        for i in range(n - gap):
-            j = 1
-            while (i + gap * j) < n:
-                for p in range(j):
-                    if array[i + gap * j] >= array[i + gap * p]:
-                        continue
-                    temp = array[i + gap * j]
-                    for q in range(j, p, -1):
-                        array[i + gap * q] = array[i + gap * (q - 1)]
-                    array[i + gap * p] = temp
-                    break
-                j = j + 1
+# coding: utf8
 
-    @classmethod
-    def shell_sort(cls, array):
-        gap = len(array) / 2
-        while gap >= 1:
-            cls.group_sort(array, gap)
-            gap = gap / 2
+
+def shell_sort(array):
+    gap = len(array) / 2
+    while gap >= 1:
+        group_sort(array, gap)
+        gap = gap / 2
+
+
+def group_sort(array, gap):
+    n = len(array)
+    for i in range(gap):
+        # 对分组进行直接插入排序
+        j = 1
+        while i + j * gap < n:
+            for k in range(0, j):
+                temp = array[i + j * gap]
+                if array[i + k * gap] <= temp:
+                    continue
+                for m in range(j, k, -1):
+                    array[i + m * gap] = array[i + (m - 1) * gap]
+                array[i + k * gap] = temp
+                break
+            j = j + 1
+
 
 if __name__ == "__main__":
     import random
-    lst = range(20)
-    random.shuffle(lst)
-    print lst
-    ShellSort.shell_sort(lst)
-    print lst
 
+    elements = list(range(20)) * 2
+    random.shuffle(elements)
+    print(elements)
+
+    shell_sort(elements)
+    print(elements)
