@@ -7,12 +7,20 @@ def selection_sort(array):
         return
 
     for i in range(1, n / 2 + 1):
-        min_index, max_index = \
-            select_min_and_max(array, i - 1, n - i)
-        array[i - 1], array[min_index] = \
-            array[min_index], array[i - 1]
-        array[n - i], array[max_index] = \
-            array[max_index], array[n - i]
+        start_index = i - 1
+        end_index = n - i
+        min_index, max_index = select_min_and_max(
+            array, start_index, end_index)
+
+        min_element = array[min_index]
+        max_element = array[max_index]
+        start_element = array[start_index]
+        end_element = array[end_index]
+
+        array[start_index] = min_element
+        array[end_index] = max_element
+        array[min_index] = start_element
+        array[max_index] = end_element
 
 
 def select_min_and_max(array, start, end):
@@ -32,8 +40,7 @@ def select_min_and_max(array, start, end):
 if __name__ == "__main__":
     import random
 
-    elements = list(range(20)) * 2
-    random.shuffle(elements)
+    elements = [1, 0, 0, 0, 0, 0]
     print(elements)
 
     selection_sort(elements)
