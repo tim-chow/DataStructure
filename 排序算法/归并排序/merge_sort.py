@@ -1,4 +1,4 @@
-class MergeSort:
+class MergeSort(object):
     @staticmethod
     def merge(array, start, mid, end):
         if not (start <= mid <= end):
@@ -56,11 +56,11 @@ class MergeSort:
                     mid = min(start + step / 2 - 1, end)
                 cls.merge(array, start, mid, end)
 
+
 if __name__ == "__main__":
     import random
-    lst = range(30)
+    lst = list(range(30))
     random.shuffle(lst)
-    print lst
+    print(lst)
     MergeSort.merge_sort(lst)
-    print lst
-
+    print(lst)
