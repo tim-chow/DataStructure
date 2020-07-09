@@ -1,1 +1,1 @@
-请移步[蒂米的博客](http://timd.cn/2017/10/16/straight-insertion-sort/)。  
+请移步[ Tim 的博客](http://timd.cn/sort/straight-insertion-sort/)。  
