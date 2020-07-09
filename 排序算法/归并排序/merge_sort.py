@@ -1,8 +1,9 @@
 class MergeSort(object):
     @staticmethod
     def merge(array, start, mid, end):
-        if not (start <= mid <= end):
+        if not (0 <= start <= mid < end):
             return
+
         i, j = start, mid + 1
         temp_list = [None] * (end - start + 1)
         cursor = 0
@@ -59,8 +60,9 @@ class MergeSort(object):
 
 if __name__ == "__main__":
     import random
-    lst = list(range(30))
-    random.shuffle(lst)
-    print(lst)
-    MergeSort.merge_sort(lst)
-    print(lst)
+
+    elements = list(range(30))
+    random.shuffle(elements)
+    print(elements)
+    MergeSort.merge_sort(elements)
+    print(elements)
