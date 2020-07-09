@@ -1,24 +1,27 @@
-#coding: utf8
+# coding: utf8
 
-class StraightInsertionSort:
-    @staticmethod
-    def straight_insertion_sort(array):
-        for i in range(1, len(array)):
-            for j in range(i):
-                if array[i] >= array[j]:
-                    continue
-                # move array[j...i-1] ---> array[j+1...i]
-                sentinal = array[i]
-                for k in range(i, j, -1):
-                    array[k] = array[k-1]
-                array[j] = sentinal
-                break
+
+def straight_insertion_sort(array):
+    if len(array) <= 1:
+        return
+
+    for i in range(1, len(array)):
+        for j in range(0, i):
+            if array[j] <= array[i]:
+                continue
+            temp = array[i]
+            # 把 array[j...i-1] 移动到 array[j+1...i]
+            for ind in range(i, j, -1):
+                array[ind] = array[ind - 1]
+            array[j] = temp
+
 
 if __name__ == "__main__":
     import random
-    lst = range(20)
-    random.shuffle(lst)
-    print lst
-    StraightInsertionSort.straight_insertion_sort(lst)
-    print lst
 
+    elements = list(range(20)) * 2
+    random.shuffle(elements)
+    print(elements)
+
+    straight_insertion_sort(elements)
+    print(elements)
