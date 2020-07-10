@@ -1,1 +1,1 @@
-关于KMP算法，可以参考[蒂米的博客](http://timd.cn/2017/09/13/kmp/)  
+请参考[ Tim 的博客](http://timd.cn/kmp/)
