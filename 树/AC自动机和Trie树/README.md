@@ -1,1 +1,1 @@
-请阅读[蒂米的博客](http://timd.cn/2017/09/18/ac/)
+请阅读[ Tim 的博客](http://timd.cn/ac/)
