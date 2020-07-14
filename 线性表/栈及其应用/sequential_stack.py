@@ -1,3 +1,6 @@
+# coding: utf8
+
+
 class Stack(object):
     def __init__(self):
         self._array_list = []
@@ -16,7 +19,7 @@ class Stack(object):
     def pop(self):
         if self.is_empty():
             raise RuntimeError("stack is empty")
-        element = self._array_list.pop(-1)
+        element = self._array_list.pop()
         self._top = self._top - 1
         return element
 
@@ -25,25 +28,27 @@ class Stack(object):
             raise RuntimeError("stack is empty")
         return self._array_list[-1]
 
-def is_pair(string):
-    def _is_left(char):
-        return char in ["{", "[", "("]
 
-    def _is_pair(left, right):
-        pairs = {"{": "}", "[": "]", "(": ")"}
-        return right == pairs[left]
+def is_pair(string):
+    lefts = {"{", "[", "("}
+    matches = {"{": "}", "[": "]", "(": ")"}
 
     stack = Stack()
     for char in string:
-        if _is_left(char):
+        if char in lefts:
+            # 遇到左括号，压栈
             stack.push(char)
         else:
+            # 遇到右括号弹出栈顶元素，并判断是否匹配
             if stack.size() == 0:
                 return False
             left = stack.pop()
-            if not _is_pair(left, char):
+            if char != matches[left]:
                 return False
+
+    # 最后检查栈是否为空
     return stack.size() == 0
+
 
 def conversion(n, base):
     result = ["+"]
@@ -64,4 +69,5 @@ def conversion(n, base):
 
 if __name__ == "__main__":
     print(is_pair("[[]]()"))
-    print(conversion(20, 2))
+    print(is_pair("[[()()]"))
+    print(conversion(35, 18))
