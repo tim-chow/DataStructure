@@ -1,8 +1,14 @@
+# coding: utf8
+
+
 class LinkedList(object):
+    """
+    单链表实现
+    """
     class Node(object):
-        def __init__(self, element, next=None):
+        def __init__(self, element, next_node=None):
             self._element = element
-            self._next = next
+            self._next_node = next_node
 
         @property
         def element(self):
@@ -13,83 +19,73 @@ class LinkedList(object):
             self._element = element
 
         @property
-        def next(self):
-            return self._next
+        def next_node(self):
+            return self._next_node
 
-        @next.setter
-        def next(self, next):
-            self._next = next
+        @next_node.setter
+        def next_node(self, next_node):
+            self._next_node = next_node
 
     def __init__(self):
+        # 头结点
         self._head = self.Node(None, None)
+        # 元素数量
         self._size = 0
 
-    def add(self, element):
-        node = self._head
-        while node.next:
-            node = node.next
-        node.next = self.Node(element)
-        self._size = self._size + 1
-
     def insert(self, index, element):
-        if self._size == 0:
-            self._head.next = self.Node(element)
-            self._size = self._size + 1
-            return
-
-        if index < 0:
-            index = 0
-        if index >= self._size:
-            self.add(element)
-            return
-
+        # 先找到待插入节点的前一个节点，然后在其后插入新节点
         node = self._head
-        for _ in range(index + 1):
-            node = node.next
-        new_node = self.Node(node.element)
-        new_node.next = node.next
-        node.element = element
-        node.next = new_node
-        self._size = self._size + 1
+        cursor = -1
+        while node is not None:
+            if cursor == index - 1:
+                # 插入新节点
+                new_node = self.Node(element)
+                new_node.next_node = node.next_node
+                node.next_node = new_node
+                break
+            node = node.next_node
+            cursor = cursor + 1
+        else:
+            raise IndexError("invalid index")
 
-    def delete(self, index):
-        if self._size == 0 or index < 0 or index >= self._size:
-            return
-
-        prev_node = self._head
-        for i in range(index):
-            prev_node = prev_node.next
-
-        deleted_node = prev_node.next
-        prev_node.next = deleted_node.next
-        self._size = self._size - 1
-
-    def __str__(self):
-        node = self._head.next
-        result = []
-        while node:
-            result.append(node.element)
-            node = node.next
-        return ", ".join(map(str, result))
+    def delete(self, element):
+        # 先找到待删除节点的前一个节点，然后删除节点
+        node = self._head
+        while node.next_node is not None:
+            if node.next_node.element == element:
+                node.next_node = node.next_node.next_node
+                break
+            node = node.next_node
+        else:
+            raise ValueError("not found")
 
     def find(self, element):
-        node = self._head
-        for index in range(self._size):
-            node = node.next
+        cursor = 0
+        node = self._head.next_node
+
+        while node is not None:
             if node.element == element:
-                return index
-        return -1
+                return cursor
+            node = node.next_node
+            cursor = cursor + 1
+        else:
+            raise ValueError("not found")
+
 
 if __name__ == "__main__":
-    list = LinkedList()
-    list.insert(-1, 1)
-    list.insert(1, 2)
-    list.insert(100, 4)
-    list.insert(2, 3)
-    list.insert(1, 1.5)
-    list.insert(0, 0.5)
-    list.insert(5, 3.5)
-    list.insert(6, 3.75)
-    list.insert(8, 5)
-    print list.find(3.75)
+    import unittest
 
+    class LinkedListTest(unittest.TestCase):
+        def testLinkedList(self):
+            linked_list = LinkedList()
+            linked_list.insert(0, 0)
+            self.assertEqual(linked_list.find(0), 0)
+            linked_list.insert(0, 1)
+            self.assertEqual(linked_list.find(1), 0)
+            self.assertEqual(linked_list.find(0), 1)
+            linked_list.insert(2, 2)
+            self.assertEqual(linked_list.find(2), 2)
+            linked_list.delete(1)
+            self.assertEqual(linked_list.find(2), 1)
+            self.assertRaises(ValueError, linked_list.delete, 3)
+            self.assertRaises(ValueError, linked_list.find, 3)
