@@ -89,3 +89,5 @@ if __name__ == "__main__":
             self.assertEqual(linked_list.find(2), 1)
             self.assertRaises(ValueError, linked_list.delete, 3)
             self.assertRaises(ValueError, linked_list.find, 3)
+
+    unittest.main()
