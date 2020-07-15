@@ -1,216 +1,201 @@
-#coding: utf8
+# coding: utf8
 
-class BaseFrame(object):
-    @staticmethod
-    def run(first_frame):
-        stack = [first_frame]
-        address, value = 0, None
-        while stack:
-            next_frame = stack[-1].execute(address, value)
-            if not next_frame:
-                frame = stack.pop(-1)
-                address = frame.get_return_address()
-                value = frame.get_result()
-            else:
-                stack.append(next_frame)
-                address, value = 0, None
-        return value
-
-class TreeFrame(BaseFrame):
-    def __init__(self, return_address, root):
-        self._return_address = return_address
-        self._root = root
-        self._nodes = []
-
-    def get_return_address(self):
-        return self._return_address
-
-    def get_result(self):
-        return self._nodes
-
-def preorder_traverse1(root):
-    if not root:
-        return []
-    nodes = [root.element]
-    nodes.extend(preorder_traverse2(root.left))
-    nodes.extend(preorder_traverse2(root.right))
-    return nodes
-
-def preorder_traverse2(root):
-    class Frame(TreeFrame):
-        def __init__(self, return_address, root):
-            super(self.__class__, self).__init__(return_address, root)
-
-        def execute(self, address, value):
-            if not self._root:
-                return
-
-            if address == 0:
-                self._nodes.append(self._root.element)
-                return Frame(1, self._root.left)
-            if address == 1:
-                self._nodes.extend(value)
-                return Frame(2, self._root.right)
-            if address == 2:
-                self._nodes.extend(value)
-            return
-    return Frame.run(Frame(-1, root))
-
-def postorder_traverse1(root):
-    if not root:
-        return []
-    nodes = []
-    nodes.extend(postorder_traverse1(root.left))
-    nodes.extend(postorder_traverse1(root.right))
-    nodes.append(root.element)
-    return nodes
-
-def postorder_traverse2(root):
-    class Frame(TreeFrame):
-        def __init__(self, return_address, root):
-            super(self.__class__, self).__init__(return_address, root)
-
-        def execute(self, address, value):
-            if not self._root:
-                return
-            if address == 0:
-                return Frame(1, self._root.left)
-            if address == 1:
-                self._nodes.extend(value)
-                return Frame(2, self._root.right)
-            if address == 2:
-                self._nodes.extend(value)
-                self._nodes.append(self._root.element)
-            return
-    return Frame.run(Frame(-1, root))
-
-def inorder_traverse1(root):
-    if not root:
-        return []
-    nodes = []
-    nodes.extend(inorder_traverse1(root.left))
-    nodes.append(root.element)
-    nodes.extend(inorder_traverse1(root.right))
-    return nodes
-
-def inorder_traverse2(root):
-    class Frame(TreeFrame):
-        def __init__(self, *a, **kw):
-            super(self.__class__, self).__init__(*a, **kw)
-
-        def execute(self, address, value):
-            if not self._root:
-                return 
-            if address == 0:
-                return Frame(1, self._root.left)
-            if address == 1:
-                self._nodes.extend(value)
-                self._nodes.append(self._root.element)
-                return Frame(2, self._root.right)
-            if address == 2:
-                self._nodes.extend(value)
-            return
-    return Frame.run(Frame(-1, root))
 
 class BinaryTreeNode(object):
-    def __init__(self, element, right=None, left=None):
-        self._element = element
-        self._right = right
-        self._left = left
+    def __init__(self, element, left=None, right=None):
+        self.element = element
+        self.left = left
+        self.right = right
 
-    @property
-    def element(self):
-        return self._element
-
-    @property
-    def right(self):
-        return self._right
-
-    @right.setter
-    def right(self, right):
-        self._right = right
-
-    @property
-    def left(self):
-        return self._left
-
-    @left.setter
-    def left(self, left):
-        self._left = left
-
-    def preorder_traverse(self):
-        nodes = []
-        nodes.append(self.element)
-        if self.left:
-            nodes.extend(self.left.preorder_traverse())
-        if self.right:
-            nodes.extend(self.right.preorder_traverse())
-        return nodes
+########## 下面是先序、中序、后序遍历的递归实现 ##########
 
 
-    def inorder_traverse(self):
-        nodes = []
-        if self.left:
-            nodes.extend(self.left.inorder_traverse())
-        nodes.append(self.element)
-        if self.right:
-            nodes.extend(self.right.inorder_traverse())
-        return nodes
+def preorder_traverse(root):
+    if root is None:
+        return []
 
-    def postorder_traverse(self):
-        nodes = []
-        if self.left:
-            nodes.extend(self.left.postorder_traverse())
-        if self.right:
-            nodes.extend(self.right.postorder_traverse())
-        nodes.append(self.element)
-        return nodes
+    nodes = [root.element]
+    nodes.extend(preorder_traverse(root.left))
+    nodes.extend(preorder_traverse(root.right))
 
-    @staticmethod
-    def BFS(root):
-        queue = [root]
-        ind = 0
-        while ind < len(queue):
-            node = queue[ind]
-            if node.left:
-                queue.append(node.left)
-            if node.right:
-                queue.append(node.right)
-            ind = ind + 1
-        return queue
+    return nodes
 
-    def __str__(self):
-        return str(self._element)
-    __repr__ = __str__
+def inorder_traverse(root):
+    if root is None:
+        return []
 
-def test():
-    root = BinaryTreeNode(100)
-    root.left = BinaryTreeNode(200)
-    root.right = BinaryTreeNode(300)
+    nodes = []
+    nodes.extend(inorder_traverse(root.left))
+    nodes.append(root.element)
+    nodes.extend(inorder_traverse(root.right))
 
-    root.left.left = BinaryTreeNode(400)
-    root.left.right = None
-    root.right.left = BinaryTreeNode(500)
-    root.right.right = BinaryTreeNode(600)
+    return nodes
 
-    print "preorder..."
-    print root.preorder_traverse()
-    print preorder_traverse1(root)
-    print preorder_traverse2(root)
-    print "\n"
-    print "inorder..."
-    print root.inorder_traverse()
-    print inorder_traverse1(root)
-    print inorder_traverse2(root)
-    print "\n"
-    print "postorder..."
-    print root.postorder_traverse()
-    print postorder_traverse1(root)
-    print postorder_traverse2(root)
-    print "\n"
-    print "BFS..."
-    print BinaryTreeNode.BFS(root)
+def postorder_traverse(root):
+    if root is None:
+        return []
+
+    nodes = []
+    nodes.extend(postorder_traverse(root.left))
+    nodes.extend(postorder_traverse(root.right))
+    nodes.append(root.element)
+
+    return nodes
+
+########## 下面是先序、中序、后序遍历的非递归实现 ##########
+########## 请参考：http://timd.cn/eliminate-recursive/ ##########
+
+class Frame(object):
+    def __init__(self, root, return_address=0):
+        self.root = root
+        self.return_address = return_address
+        self.result = []
+
+    def run(self):
+        address = 0
+        value = None
+        stack = [self.__class__(self.root)]
+
+        while stack:
+            active_frame = stack[-1]
+            next_frame = active_frame.execute(address, value)
+            if next_frame is None:
+                # 进入返回段
+                address = active_frame.return_address
+                value = active_frame.result
+                stack.pop(-1)
+                continue
+            # 进入前进段
+            stack.append(next_frame)
+            address = 0
+            value = None
+
+        return value
+
+    def execute(self, address, value):
+        raise NotImplementedError("should be overridden")
+
+
+class PreorderTraverseFrame(Frame):
+    def execute(self, address, value):
+        if self.root is None:
+            return
+        if address == 0:
+            self.result.append(self.root.element)
+            return PreorderTraverseFrame(self.root.left, 1)
+        elif address == 1:
+            self.result.extend(value)
+            return PreorderTraverseFrame(self.root.right, 2)
+        elif address == 2:
+            self.result.extend(value)
+
+
+class InorderTraverseFrame(Frame):
+    def execute(self, address, value):
+        if self.root is None:
+            return
+        if address == 0:
+            return InorderTraverseFrame(self.root.left, 1)
+        elif address == 1:
+            self.result.extend(value)
+            self.result.append(self.root.element)
+            return InorderTraverseFrame(self.root.right, 2)
+        elif address == 2:
+            self.result.extend(value)
+            return
+
+
+class PostorderTraverseFrame(Frame):
+    def execute(self, address, value):
+        if self.root is None:
+            return
+
+        if address == 0:
+            return PostorderTraverseFrame(self.root.left, 1)
+        elif address == 1:
+            self.result.extend(value)
+            return PostorderTraverseFrame(self.root.right, 2)
+        elif address == 2:
+            self.result.extend(value)
+            self.result.append(self.root.element)
+
+########## 下面是广度优先遍历的非递归实现 ##########
+
+
+def bfs(root):
+    elements = []
+    queue = [root]
+    while queue:
+        node = queue.pop(0)
+        if node is None:
+            continue
+        elements.append(node.element)
+        queue.append(node.left)
+        queue.append(node.right)
+    return elements
+
+########## 下面是广度优先遍历的递归实现
+
+
+def bfs_recursive(nodes):
+    if isinstance(nodes, BinaryTreeNode):
+        nodes = [nodes]
+
+    # 先将本层的节点保存到结果列表，然后生成下层的节点列表
+    elements = []
+    next_nodes = []
+    for node in nodes:
+        if node is None:
+            continue
+        elements.append(node.element)
+        next_nodes.append(node.left)
+        next_nodes.append(node.right)
+    # 如果没有下一层，则返回；否则，递归地遍历下一层
+    if next_nodes:
+        elements.extend(bfs_recursive(next_nodes))
+    return elements
+
 
 if __name__ == "__main__":
-    test()
+    import unittest
 
+    class BinaryTreeTest(unittest.TestCase):
+        def setUp(self):
+            ######################
+            #          0         #
+            #       /    \       #
+            #      1      2      #
+            #      \    /  \     #
+            #       3  4    5    #
+            ######################
+            nodes = [BinaryTreeNode(ind) for ind in range(6)]
+            nodes[0].left = nodes[1]
+            nodes[0].right = nodes[2]
+            nodes[1].right = nodes[3]
+            nodes[2].left = nodes[4]
+            nodes[2].right = nodes[5]
+            self.root = nodes[0]
+            del nodes
+
+        def testPreorderTraverse(self):
+            result = [0, 1, 3, 2, 4, 5]
+            self.assertEqual(preorder_traverse(self.root), result)
+            self.assertEqual(PreorderTraverseFrame(self.root).run(), result)
+
+        def testInorderTraverse(self):
+            result = [1, 3, 0, 4, 2, 5]
+            self.assertEqual(inorder_traverse(self.root), result)
+            self.assertEqual(InorderTraverseFrame(self.root).run(), result)
+
+        def testPostorderTraverse(self):
+            result = [3, 1, 4, 5, 2, 0]
+            self.assertEqual(postorder_traverse(self.root), result)
+            self.assertEqual(PostorderTraverseFrame(self.root).run(), result)
+
+        def testBFS(self):
+            result = [0, 1, 2, 3, 4, 5]
+            self.assertEqual(bfs(self.root), result)
+            self.assertEqual(bfs_recursive(self.root), result)
+
+
+    unittest.main()
