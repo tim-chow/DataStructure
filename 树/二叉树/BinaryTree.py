@@ -197,5 +197,4 @@ if __name__ == "__main__":
             self.assertEqual(bfs(self.root), result)
             self.assertEqual(bfs_recursive(self.root), result)
 
-
     unittest.main()
