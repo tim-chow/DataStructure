@@ -2,121 +2,164 @@
 
 
 class Node(object):
-    def __init__(self, keyword=None, left=None, right=None):
+    """
+    二叉搜索树的节点
+    """
+    def __init__(self, keyword, left=None, right=None):
         self.keyword = keyword
         self.left = left
         self.right = right
 
-    def __str__(self):
-        return "Node{keyword=%s, left=%s, right=%s}" % (
-            self.keyword, self.left, self.right)
-
-    __repr__ = __str__
-
 
 class BinarySearchTree(object):
+    """
+    二叉搜索树实现
+    """
     def __init__(self):
-        self._root_node = None
+        self._root = None
 
-    def add_keyword(self, keyword):
-        if self._root_node == None:
-            self._root_node = Node(keyword)
+    def insert(self, keyword):
+        # 如果树为空，则创建新节点，并使之成为根节点
+        if self._root is None:
+            self._root = Node(keyword)
             return
 
-        node = self._root_node
-        while node != None:
+        node = self._root
+        while True:
+            # 如果待插入关键字小于 node 的关键字
             if keyword < node.keyword:
-                if node.left == None:
+                # 如果 node 的左子树为空，则创建新节点，并使之成为 node 的左孩子节点
+                if node.left is None:
                     node.left = Node(keyword)
                     break
+                # 否则，使用相同的方式在左子树上进行插入
                 node = node.left
+            # 如果待插入关键字不小于 node 的关键字
             else:
-                if node.right == None:
+                # 如果 node 的右子树为空，则创建新节点，并使之成为 node 的右孩子节点
+                if node.right is None:
                     node.right = Node(keyword)
                     break
+                # 否则，使用相同的方式在右子树上进行插入
                 node = node.right
 
-    def find_keyword(self, keyword):
-        node = self._root_node
-        while node != None:
+    def search(self, keyword):
+        node = self._root
+        while node is not None:
+            # 如果 node 的关键字等于待查询关键字，则搜索成功
+            if keyword == node.keyword:
+                return node
+            # 如果待搜索关键字小于 node 的关键字，则使用相同的方式在左子树上进行查询
             if keyword < node.keyword:
                 node = node.left
-            elif keyword > node.keyword:
-                node = node.right
-            else:
-                return node
+                continue
+            # 否则，使用相同的方式在右子树上进行查询
+            node = node.right
         return None
 
-    def delete_keyword(self, keyword):
-        # 找到待删除节点
-        node = self._root_node
-        prev_node = None
-        is_left = False
-        while node != None:
+    def delete(self, keyword):
+        node = self._root
+        left = None
+        parent = node
+        while node is not None:
             if keyword == node.keyword:
-                break
-            prev_node = node
-            if keyword < node.keyword:
-                is_left = True
+                # 如果待删除节点是叶子节点
+                if node.left is None and node.right is None:
+                    # 如果待删除节点是根节点，那么将树置空
+                    if node is self._root:
+                        self._root = None
+                    # 否则，将待删除节点的父节点的相应孩子节点置空
+                    elif left:
+                        parent.left = None
+                    else:
+                        parent.right = None
+                # 如果待删除节点的左子树和右子树都不为空
+                elif node.left is not None and node.right is not None:
+                    # 找到左子树的最右节点（或者找到右子树的最左节点）
+                    temp = node.left
+                    parent = node
+                    left = True
+                    while temp.right is not None:
+                        parent = temp
+                        left = False
+                        temp = temp.right
+                    # 将待删除节点的关键字置为 temp 的关键字，然后将 temp 删掉
+                    node.keyword = temp.keyword
+                    # 因为 temp 的右子树肯定为空，所以将其左子树接到其父节点
+                    if left:
+                        parent.left = temp.left
+                    else:
+                        parent.right = temp.left
+                # 如果待删除节点的左子树为空
+                elif node.left is None:
+                    # 如果待删除节点是根节点，则将根节点置为其右孩子节点
+                    if node is self._root:
+                        self._root = node.right
+                    # 否则，将待删除节点的右孩子节点接到其父节点上
+                    elif left:
+                        parent.left = node.right
+                    else:
+                        parent.right = node.right
+                # 如果待删除节点的右子树为空
+                else:
+                    # 如果待删除节点是根节点，则将根节点职位其左孩子节点
+                    if node is self._root:
+                        self._root = node.left
+                    # 否则，将待删除节点的左孩子节点接到其父节点上
+                    elif left:
+                        parent.left = node.left
+                    else:
+                        parent.right = node.left
+                return
+            elif keyword < node.keyword:
+                # 使用相同的方式，去左子树上进行删除
+                parent = node
+                left = True
                 node = node.left
             else:
-                is_left = False
+                # 使用相同的方式，去右子树上进行删除
+                parent = node
+                left = False
                 node = node.right
-        else:
-            return
 
-        # 如果待节点没有左孩子和（或）没有右孩子，
-        # + 那么将其非空的子树直接接到其双亲节点
-        if not node.left or not node.right:
-            subtree = node.left or node.right
-            if prev_node == None:
-                self._root_node = subtree
-                return
-            if is_left:
-                prev_node.left = subtree
-            else:
-                prev_node.right = subtree
-            return
+        raise KeyError("not found")
 
-        # 找到左子树的最右节点，也就是左子树中关键字最大的节点
-        # + （该节点的右子树一定为空）
-        prev_node = node
-        tmp_node = node.left
-        is_left = True
-        while tmp_node.right != None:
-            is_left = False
-            prev_node = tmp_node
-            tmp_node = tmp_node.right
-
-        # 使用左子树中的最大的关键字替代要删除节点的关键字
-        node.keyword = tmp_node.keyword
-        if is_left:
-            prev_node.left = tmp_node.left
-        else:
-            prev_node.right = tmp_node.left
-
-    def __str__(self):
-        return str(self._root_node)
-
-    __repr__ = __str__
+    @property
+    def root(self):
+        return self._root
 
 
 if __name__ == "__main__":
-    bst = BinarySearchTree()
-    print(bst)
-    bst.add_keyword(100)
-    bst.add_keyword(50)
-    bst.add_keyword(120)
-    bst.add_keyword(70)
-    print(bst)
-    print(bst.find_keyword(90) == None)
-    print(bst.find_keyword(70))
-    bst.delete_keyword(100)
-    print(bst)
-    bst.delete_keyword(50)
-    print(bst)
-    bst.delete_keyword(70)
-    print(bst)
-    bst.delete_keyword(120)
-    print(bst)
+    import random
+    elements = list(range(20))
+    random.shuffle(elements)
+    print("元素列表：")
+    print(elements)
 
+    print("插入元素")
+    binary_search_tree = BinarySearchTree()
+    for ind in elements:
+        binary_search_tree.insert(ind)
+
+    def inorder_traverse(root):
+        if root is None:
+            return []
+
+        nodes = []
+        nodes.extend(inorder_traverse(root.left))
+        nodes.append(root.keyword)
+        nodes.extend(inorder_traverse(root.right))
+
+        return nodes
+
+    print("中序遍历：")
+    print(inorder_traverse(binary_search_tree.root))
+
+    for ind in elements:
+        assert binary_search_tree.search(ind) is not None
+
+    print("删除元素")
+    for ind in elements:
+        binary_search_tree.delete(ind)
+
+    assert binary_search_tree.root is None
