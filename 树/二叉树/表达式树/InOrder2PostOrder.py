@@ -1,135 +1,246 @@
-class Node(object):
-    def __init__(self, element, left=None, right=None):
-        self._element = element
-        self._left = left
-        self._right = right
+# coding: utf8
 
-    @property
-    def element(self):
-        return self._element
-
-    @property
-    def left(self):
-        return self._left
-
-    @property
-    def right(self):
-        return self._right
-
-    def postorder_traverse(self):
-        if self.left:
-            self.left.postorder_traverse()
-        if self.right:
-            self.right.postorder_traverse()
-        print self.element
 
 class Operator(object):
-    operators = {}
+    def __init__(self, char):
+        self.char = char
 
-    def __init__(self, character, priority):
-        self._character = character
-        self._priority = priority
-        self.operators[character] = self
+    @staticmethod
+    def get_operator(char):
+        if char == "+":
+            return PlusOperator()
+        if char == "-":
+            return MinusOperator()
+        if char == "*":
+            return MultiplyOperator()
+        if char == "/":
+            return DivisionOperator()
+        return None
 
-    @property
-    def character(self):
-        return self._character
+    def __str__(self):
+        return self.char
 
-    @property
-    def priority(self):
-        return self._priority
+    def execute(self, left, right):
+        raise NotImplementedError
 
-    def precedence_over(self, other):
-        if not isinstance(other, self.__class__):
-            raise RuntimeError("invalid type")
-        if self.priority == other.priority:
+
+class PlusOperator(Operator):
+    def __init__(self):
+        Operator.__init__(self, "+")
+
+    def __cmp__(self, other):
+        if isinstance(other, (PlusOperator, MinusOperator)):
             return 0
-        if self.priority > other.priority:
-            return 1
         return -1
-    
-    @classmethod
-    def get_operator(cls, character):
-        return cls.operators.get(character)
 
-class InOrder2PostOrder:
-    Operator("+", 1)
-    Operator("-", 1)
-    Operator("*", 2)
-    Operator("/", 2)
-    Operator("(", 0)
-    Operator(")", 0)
+    def execute(self, left, right):
+        return left + right
+
+class MinusOperator(Operator):
+    def __init__(self):
+        Operator.__init__(self, "-")
+
+    def __cmp__(self, other):
+        if isinstance(other, (PlusOperator, MinusOperator)):
+            return 0
+        return -1
+
+    def execute(self, left, right):
+        return left - right
+
+
+class MultiplyOperator(Operator):
+    def __init__(self):
+        Operator.__init__(self, "*")
+
+    def __cmp__(self, other):
+        if isinstance(other, (MultiplyOperator, DivisionOperator)):
+            return 0
+        return 1
+
+    def execute(self, left, right):
+        return left * right
+
+
+class DivisionOperator(Operator):
+    def __init__(self):
+        Operator.__init__(self, "/")
+
+    def __cmp__(self, other):
+        if isinstance(other, (MultiplyOperator, DivisionOperator)):
+            return 0
+        return 1
+
+    def execute(self, left, right):
+        return left / right
+
+
+class Operand(object):
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return str(self.value)
+
+
+class Bracket(object):
+    def __init__(self, char):
+        self.char = char
 
     @staticmethod
-    def inorder_2_postorder(list):
-        result = []
-        stack = []
-        for element in list:
-            operator = Operator.get_operator(element)
-            if not operator:
-                result.append(element)
-                continue
-            if element == "(":
-                stack.append(operator)
-                continue
-            if element == ")":
-                while stack:
-                    o = stack.pop(-1)
-                    if o.character == "(":
-                        break
-                    result.append(o.character)
-                continue
+    def get_bracket(char):
+        if char == "(":
+            return LeftBracket()
+        if char == ")":
+            return RightBracket()
+        return None
 
+    def __str__(self):
+        return self.char
+
+
+class LeftBracket(Bracket):
+    def __init__(self):
+        Bracket.__init__(self, "(")
+
+
+class RightBracket(Bracket):
+    def __init__(self):
+        Bracket.__init__(self, ")")
+
+
+def inorder_to_postorder(inorder_tokens):
+    """
+    中缀表达式转后缀表达式
+    """
+    postorder_tokens = []
+    stack = []
+    for token in inorder_tokens:
+        # 遇到操作数时，直接输出
+        if isinstance(token, Operand):
+            postorder_tokens.append(token)
+            continue
+
+        # 遇到左括号时，将其压进栈中
+        if isinstance(token, LeftBracket):
+            stack.append(token)
+            continue
+
+        # 遇到右括号时，弹出栈顶的操作符，并输出，直到遇到左括号，
+        # 并且左括号不输出，右括号不进栈
+        if isinstance(token, RightBracket):
             while stack:
-                if stack[-1].precedence_over(operator) == -1:
+                element = stack.pop()
+                if isinstance(element, LeftBracket):
                     break
-                result.append(stack.pop(-1).character)
-            stack.append(operator)
+                postorder_tokens.append(element)
+            continue
 
-        while stack:
-            result.append(stack.pop(-1).character)
-        return result
+        # 遇到其它操作符时，弹出栈顶的操作符，并输出，直到栈空或栈顶的操作符的优先级小于该操作符的优先级
+        # 或遇到左括号，然后将该操作符压入栈中
+        if isinstance(token, Operator):
+            while stack:
+                if isinstance(stack[-1], LeftBracket) or stack[-1] < token:
+                    break
+                postorder_tokens.append(stack.pop())
+            stack.append(token)
+            continue
 
-    @staticmethod
-    def eval(postorder_expression):
-        expression = postorder_expression
-        stack = []
-        for element in expression:
-            operator = Operator.get_operator(element)
-            if not operator:
-                stack.append(element)
-                continue
+        raise RuntimeError("unreachable")
 
-            operand1 = float(stack.pop(-1))
-            operand2 = float(stack.pop(-1))
-            if element == "+":
-                stack.append(operand1 + operand2)
-            elif element == "-":
-                stack.append(operand1 - operand2)
-            elif element == "*":
-                stack.append(operand1 * operand2)
-            else:
-                stack.append(operand1 / operand2)
-        return stack.pop(-1)
+    # 最后将栈中的操作符弹出，直到栈空
+    while stack:
+        postorder_tokens.append(stack.pop())
 
-    @staticmethod
-    def generate_expression_tree(postorder_expression):
-        stack = []
-        for element in postorder_expression:
-            operator = Operator.get_operator(element)
-            if not operator:
-                stack.append(Node(element))
-                continue
-            right = stack.pop(-1)
-            left = stack.pop(-1)
-            stack.append(Node(element, left, right))
-        return stack.pop(-1)
+    return postorder_tokens
+
+
+class Node(object):
+    def __init__(self, keyword, left=None, right=None):
+        self.keyword = keyword
+        self.left = left
+        self.right = right
+
+
+def postorder_to_expression_tree(tokens):
+    """
+    后缀表达式转表达式树
+    """
+    stack = []
+    for token in tokens:
+        # 遇到操作数时，则生成单节点，然后放到栈中
+        if isinstance(token, Operand):
+            stack.append(Node(token.value))
+            continue
+        # 遇到操作符时，则生成一个新节点，并从栈中弹出两个元素，
+        # 同时把这两个元素作为新节点的子树，然后将该新节点放入栈中
+        if isinstance(token, Operator):
+            right = stack.pop()
+            left = stack.pop()
+            stack.append(Node(token.char, left, right))
+            continue
+
+        raise RuntimeError("unreachable")
+
+    # 最后栈中的元素就是表达式树的根
+    return stack[-1]
+
+
+def test():
+    expression = "(1+2)*(3+4)+(5*(6+7))+80/(20-10)"  # 94
+
+    class Reader(object):
+        def __init__(self, string):
+            self._string = string
+            self._operators = set(list("+-*/()"))
+            self._cursor = 0
+
+        def read(self):
+            if self._cursor >= len(self._string):
+                return
+
+            char = self._string[self._cursor]
+            self._cursor = self._cursor + 1
+            if char in self._operators:
+                return char
+
+            chars = [char]
+            while self._cursor < len(self._string):
+                char = self._string[self._cursor]
+                if char in self._operators:
+                    return "".join(chars)
+                self._cursor = self._cursor + 1
+                chars.append(char)
+            return "".join(chars)
+
+    reader = Reader(expression)
+    tokens = []
+    while True:
+        token = reader.read()
+        if token is None:
+            break
+        operator = Operator.get_operator(token)
+        if operator is not None:
+            tokens.append(operator)
+            continue
+        bracket = Bracket.get_bracket(token)
+        if bracket is not None:
+            tokens.append(bracket)
+            continue
+        tokens.append(Operand(int(token)))
+
+    postorder_tokens = inorder_to_postorder(tokens)
+
+    stack = []
+    for token in postorder_tokens:
+        if isinstance(token, Operand):
+            stack.append(token)
+        elif isinstance(token, Operator):
+            right = stack.pop()
+            left = stack.pop()
+            stack.append(Operand(token.execute(left.value, right.value)))
+    print(stack[-1].value)
+
 
 if __name__ == "__main__":
-    expression = "( ( 1 + 2 ) * ( 3 + 4 ) ) * ( 5 + 6 )".split(" ")
-    print eval("".join(expression))
-    po = InOrder2PostOrder.inorder_2_postorder(expression)
-    print po
-    print InOrder2PostOrder.eval(po)
-    InOrder2PostOrder.generate_expression_tree(po).postorder_traverse()
-
+    test()
