@@ -1,1 +1,1 @@
-一篇关于跳表，比较好的文章：[SkipList 跳表](http://kenby.iteye.com/blog/1187303)  
+请参考 [Tim 的博客](http://timd.cn/data-structure/skiplist/)  
