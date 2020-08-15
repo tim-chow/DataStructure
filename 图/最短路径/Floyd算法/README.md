@@ -1,1 +1,1 @@
-请移步[Tim的博客](http://timd.cn/data-structure/floyd/)  
+请移步 [Tim 的博客](http://timd.cn/data-structure/floyd/)
