@@ -2,4 +2,4 @@
 
 代码中使用的测试用例如下图所示：
 
-![dijkstra.png](http://images.timd.cn/data-structure/dijkstra.png)
+![dijkstra-example.png](http://images.timd.cn/data-structure/dijkstra-example.png)
