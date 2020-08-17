@@ -20,7 +20,7 @@ AOE 网（Activity On Edge Network）是使用：
 
 从源点到顶点 v<sub>i</sub> 的最长路径是 v<sub>i</sub> 所代表的事件的<strong>最早发生时间</strong>，记作 ve(i)，该时间决定了所有以该顶点为弧尾的弧所代表的活动的最早发生时间。将 a<sub>i</sub> 所代表的活动的最早发生时间记作e(i)。
 
-每个活动和事件还有一个<strong>最迟发生时间</strong>，分别记作 l(i) 和 vl(i)，该时间表示<strong>为了不影响工程进度，活动和时间最迟必须开始的时间</strong>。
+每个活动和事件还有一个<strong>最迟发生时间</strong>，分别记作 l(i) 和 vl(i)，该时间表示<strong>为了不影响工程进度，活动和事件最迟必须开始的时间</strong>。
 
 <ul>
   <li>将 l(i) = e(i) 的活动叫<strong>关键活动</strong></li>
