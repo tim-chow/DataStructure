@@ -36,8 +36,10 @@ AOE 网（Activity On Edge Network）是使用：
 
 最终将寻找关键路径转换成了<strong>寻找每个事件的最早发生时间和最迟发生时间</strong>。
 
+更多详情，请阅读延伸阅读中的文章。
+
 ---
 
-### 参考文档
+### 延伸阅读
 
 * [https://www.cnblogs.com/william-lee/p/5043753.html](https://www.cnblogs.com/william-lee/p/5043753.html)。
