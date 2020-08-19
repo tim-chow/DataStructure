@@ -14,6 +14,7 @@ def _string_reverse(chars, from_index=None, end_index=None):
 
     return chars
 
+
 def string_reverse(string):
     chars = list(string)
     chars = _string_reverse(chars)
@@ -21,12 +22,12 @@ def string_reverse(string):
     index = 0
     while index < len(chars):
         if chars[index] == " ":
-            _string_reverse(chars, start, index-1)
+            _string_reverse(chars, start, index - 1)
             start = index + 1
         index = index + 1
 
     return "".join(chars)
 
+
 if __name__ == "__main__":
     assert string_reverse("I am a student") == "student a am I"
-
