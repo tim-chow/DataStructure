@@ -1,8 +1,27 @@
-例子：  
-I am a student  
-结果：  
-student a am I  
-解决方案：  
-经过两次反转：  
-第一次： tneduts a ma I  
-第二次： student a am I  
+例子：
+
+<pre>
+I am a student
+</pre>
+
+结果：
+
+<pre>
+student a am I
+</pre>
+
+解题思路：
+
+经过两次反转：
+
+第一次：
+
+<pre>
+tneduts a ma I
+</pre>
+
+第二次：
+
+<pre>
+student a am I
+</pre>
