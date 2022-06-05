@@ -5,19 +5,7 @@ class BagProblem(object):
     def __init__(self):
         self._cache = {}
 
-    def cache(self, f):
-        def _inner(sequence_number, current_weight, chosen):
-            key = (sequence_number, current_weight)
-            if key in self._cache:
-                print("using cached result")
-                return self._cache[key]
-            result = f(sequence_number, current_weight, chosen)
-            self._cache[key] = result
-            return result
-        return _inner
-
     def calc(self, goods, total_weight):
-        @self.cache
         def _calc(sequence_number, current_weight, chosen_goods):
             if current_weight == total_weight or sequence_number == len(goods):
                 return current_weight, chosen_goods[:]
