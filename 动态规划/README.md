@@ -12,7 +12,7 @@
 使用动态规划解决问题的一般步骤是：</br>
 <li><strong>划分阶段</strong></br>根据问题的时间或空间特征将问题划分成若干个阶段，<strong style="color:red">值得注意的是：划分后的阶段一定是可排序的或有序的，否则无法使用动态规划求解</strong></li>
 <li><strong>确定状态和状态变量</strong></br>将问题发展到各个阶段时所处的实际情况用状态表示出来，<strong style="color:red">状态的选择要具有无后效性</strong></li>
-<li><strong>确定决策和状态转移方程</strong></br>如前所述，每次决策既受限于当前状态，又会引起状态转移。<strong style="color:red">状态转移方程就是从前一阶段到后一阶段的递推关系</strong>。比如对于0\-1背包问题，状态转移方程是：</br><code>f(n, m) = max{f(n-1, m), f(n-1, m-w[n]) + P(n, m)}</code></li>
+<li><strong>确定决策和状态转移方程</strong></br>如前所述，每次决策既受限于当前状态，又会引起状态转移。<strong style="color:red">状态转移方程就是从前一阶段到后一阶段的递推关系</strong>。比如对于0\-1背包问题，状态转移方程是：</br><code>f(i, j) = max{f(i-1, j), f(i-1, j-w[i]) + c[i]}</code>（其中 f[i][j] 表示将前 i 个物品放进总重量为 j 的背包中所能获得的最大价值）</li>
 <li><strong>寻找边界条件</strong></br>边界条件就是<strong>结束状态</strong></li>
 
 ---
