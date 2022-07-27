@@ -27,6 +27,7 @@
 
 ---
 
-### 例子
+### Read Also
 
-动态规划的例子：[交换数组元素，使得数组的和的差最小](http://timd.cn/min-diff/)
+* [https://zhuanlan.zhihu.com/p/93857890](https://zhuanlan.zhihu.com/p/93857890)
+
