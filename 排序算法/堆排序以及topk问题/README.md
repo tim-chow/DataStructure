@@ -80,6 +80,6 @@ log<sub>2</sub>k * (n - k)
 ### 补充说明
 
 * 有 n 个节点的二叉树的分支的数量是 n - 1，这些分支都是由度为 1 和度为 2 的结点射出的，所以，n<sub>1</sub> + 2 &times; n<sub>2</sub> = n - 1，结合 n<sub>0</sub> + n<sub>1</sub> + n<sub>2</sub> = n，可以推出 n<sub>0</sub> = n<sub>2</sub> + 1
-    * 在完全二叉树中，度为 1 的节点，要么有 0 个（当 n 是奇数时）；要么有 1 个（当 n 是偶数时）。所以 2 &times; n<sub>0</sub> + n<sub>1</sub> - 1 = n、n<sub>0</sub> = n / 2（当 n 是偶数时）或 n<sub>0</sub> = (n + 1) / 2（当 n 是奇数时）。故在完全二叉树中，叶子节点的数量是：向上取整(n / 2)
+    * 在完全二叉树中，度为 1 的节点，要么有 0 个（当 n 是奇数时）；要么有 1 个（当 n 是偶数时）。所以 2 &times; n<sub>0</sub> + n<sub>1</sub> - 1 = n，n<sub>0</sub> = n / 2（当 n 是偶数时）或 n<sub>0</sub> = (n + 1) / 2（当 n 是奇数时）。故在完全二叉树中，叶子节点的数量是：向上取整(n / 2)
 * 设 m = a<sup>x</sup>，n = a<sup>y</sup>，则 mn = a<sup>(x+y)</sup>、x = log<sub>a</sub>m、y = log<sub>a</sub>n。所以 log<sub>a</sub>mn = log<sub>a</sub>m + log<sub>a</sub>n
 * 因为 log(mn) = logm + logn，所以 logm<sup>n</sup> = log(m * m * ... * m) = logm + ... + logm = nlogm
