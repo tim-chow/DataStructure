@@ -1,65 +1,53 @@
-# coding: utf8
+from typing import List
 
 
-class Node(object):
-    def __init__(self):
-        self.chosen = []
-        self.weight = 0
-
-    def __repr__(self):
-        return '%s{chosen=%s, weight=%d}' % (
-            self.__class__.__name__,
-            self.chosen,
-            self.weight)
+class Node:
+    def __init__(self) -> None:
+        self.weight: int = 0
 
 
-class DummyNode(Node):
-    def __init__(self):
-        Node.__init__(self)
+_dummy_node: Node = Node()
 
 
-class MaxLoading(object):
-    def __init__(self, weights, carrying_capacity):
-        self._weights = weights
-        self._number = len(weights)
-        self._carrying_capacity = carrying_capacity
+class MaxLoading:
+    def __init__(self, weights: List[int], c1_capacity: int, c2_capacity: int) -> None:
+        self._weights: List[int] = weights
+        self._c1_capacity: int = c1_capacity
+        self._c2_capacity: int = c2_capacity
 
-        # 在装了第 i 个物品之后，剩余物品的总重量
-        self._remaining = [0] * self._number
-        for ind in range(self._number - 2, -1, -1):
-            self._remaining[ind] = self._remaining[ind+1] + \
-                self._weights[ind+1]
+        # 装完第 i 件物品后，仍然剩余的总重量
+        self._remaining: List[int] = [0 for _ in range(len(weights))]
+        ind: int = len(self._weights) - 2
+        while ind >= 0:
+            self._remaining[ind] = self._remaining[ind + 1] + self._weights[ind + 1]
+            ind -= 1
 
-    def max_loading(self):
-        queue = [Node(), DummyNode()]
-
-        for ind in range(self._number):
-            node = queue.pop(0)
-            while not isinstance(node, DummyNode):
-                if node.weight + self._weights[ind] <= self._carrying_capacity:
-                    # 装第 ind 个物品
-                    new_node = Node()
-                    new_node.chosen = [item for item in node.chosen] + [ind]
+    def can_load(self) -> bool:
+        if not len(self._weights):
+            return True
+        # 对第一艘船进行优化，尽量装满它
+        queue: List[Node] = [Node(), _dummy_node]
+        for ind in range(len(self._weights)):  # type: int
+            node: Node = queue.pop(0)
+            while node is not _dummy_node:
+                # 情况 1：能装下
+                if node.weight + self._weights[ind] <= self._c1_capacity:
+                    new_node: Node = Node()
                     new_node.weight = node.weight + self._weights[ind]
                     queue.append(new_node)
-
-                if node.weight + self._weights[ind] + \
-                        self._remaining[ind] > self._carrying_capacity:
-                    # 不装第 ind 个物品
+                # 情况 2：可以不装
+                if node.weight + self._weights[ind] + self._remaining[ind] > self._c1_capacity:
                     queue.append(node)
-
                 node = queue.pop(0)
-            queue.append(DummyNode())
+            queue.append(_dummy_node)
 
-        best = None
-        for node in queue[:len(queue)-1]:
-            if best is None or node.weight > best.weight:
-                best = node
-        return best
+        best: int = 0
+        for node in queue[:-1]:  # type: Node
+            if node.weight > best:
+                best = node.weight
+        print(best)
+        return sum(self._weights) - best <= self._c2_capacity
 
 
 if __name__ == "__main__":
-    import pprint
-    pprint.pprint(
-        MaxLoading([20, 23, 26, 24], 70)
-        .max_loading())
+    print(MaxLoading([20, 28, 25, 25], 70, 30).can_load())
