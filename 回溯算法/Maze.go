@@ -2,100 +2,107 @@ package main
 
 import "fmt"
 
-type Node struct {
-	row       int
-	column    int
-	isWall    bool
-	neighbors []*Node
-	cursor    int
-}
-
-func (n *Node) IsWall() bool {
-	return n.isWall
-}
-
-func (n *Node) Row() int {
-	return n.row
-}
-
-func (n *Node) Column() int {
-	return n.column
-}
-
-func (n *Node) AddNeighbor(neighbor *Node) {
-	if neighbor != nil {
-		n.neighbors = append(n.neighbors, neighbor)
+func inStack(stack [][]int, nextNode []int) bool {
+	for _, node := range stack {
+		if node[0] == nextNode[0] && node[1] == nextNode[1] {
+			return true
+		}
 	}
+	return false
 }
 
-func (n *Node) GetNextNode() *Node {
-	if n.cursor >= len(n.neighbors) {
-		return nil
+func copyPath(stack [][]int, end []int) [][]int {
+	var path [][]int
+	for _, node := range stack {
+		path = append(path, node)
 	}
-	defer func() {
-		n.cursor += 1
-	}()
-	return n.neighbors[n.cursor]
+	path = append(path, end)
+	return path
 }
 
-func (n *Node) Is(node *Node) bool {
-	if node == nil {
-		return false
-	}
-	return n.row == node.row && n.column == node.column
-}
+// Search 搜索指定的迷宫中的全部路径
+func Search(maze [][]int, start, end []int) [][][]int {
+	var result [][][]int
 
-func NewNode(row, column int, isWall bool) *Node {
-	return &Node{
-		row:    row,
-		column: column,
-		isWall: isWall,
+	// 1 代表上面的格子待搜索；
+	// 2 代表右面的格子待搜索
+	// 3 代表下面的格子待搜索
+	// 4 代表左面的格子待搜索
+	// 5 代表上下左右都已搜索
+	// 初始值为 1
+	var status [][]int
+	for i := 0; i < len(maze); i++ {
+		status = append(status, nil)
+		for j := 0; j < len(maze[i]); j++ {
+			status[i] = append(status[i], 1)
+		}
 	}
-}
 
-func Search(start, end *Node) [][][]int {
-	if start == nil || end == nil {
-		panic("invalid start or end point")
-	}
-	stack := make([]*Node, 0)
+	// 栈中保存格子的坐标
+	var stack [][]int
+	// 将起点压入栈顶
 	stack = append(stack, start)
-	result := make([][][]int, 0)
 	for len(stack) > 0 {
 		currentExpandNode := stack[len(stack)-1]
-		nextNode := currentExpandNode.GetNextNode()
-		if nextNode == nil {
+		x, y := currentExpandNode[0], currentExpandNode[1]
+		var nextNode []int
+		switch status[x][y] {
+		case 1:
+			status[x][y] = 2
+			if x == 0 {
+				continue
+			}
+			nextNode = []int{x - 1, y}
+		case 2:
+			status[x][y] = 3
+			if y == len(maze[x])-1 {
+				continue
+			}
+			nextNode = []int{x, y + 1}
+		case 3:
+			status[x][y] = 4
+			if x == len(maze)-1 {
+				continue
+			}
+			nextNode = []int{x + 1, y}
+		case 4:
+			status[x][y] = 5
+			if y == 0 {
+				continue
+			}
+			nextNode = []int{x, y - 1}
+		default:
+			// 无法继续向纵深方向前进
+			// 恢复状态
+			status[x][y] = 1
+			// 将死节点从栈中弹出
 			stack = stack[:len(stack)-1]
 			continue
 		}
-		if nextNode.IsWall() {
+
+		x, y = nextNode[0], nextNode[1]
+		// 新节点是墙
+		if maze[x][y] == 0 {
 			continue
 		}
-		inStack := false
-		for _, node := range stack {
-			if node.Is(nextNode) {
-				inStack = true
-				break
-			}
-		}
-		if inStack {
+		// 已经在栈中
+		if inStack(stack, nextNode) {
 			continue
 		}
-		if nextNode.Is(end) {
-			path := make([][]int, 0)
-			for _, node := range stack {
-				path = append(path, []int{node.Row(), node.Column()})
-			}
-			path = append(path, []int{end.Row(), end.Column()})
-			result = append(result, path)
+		// 到达终点
+		if x == end[0] && y == end[1] {
+			result = append(result, copyPath(stack, end))
 			continue
 		}
+		// 使之成为活结点
 		stack = append(stack, nextNode)
 	}
+
 	return result
 }
 
 func main() {
-	// 0 means wall, 1 means road
+	// 0 代表墙；1 代表路
 	maze := [][]int{
 		{0, 0, 0, 0, 0},
 		{1, 1, 1, 1, 0},
@@ -103,35 +110,8 @@ func main() {
 		{1, 1, 0, 1, 0},
 		{0, 1, 1, 1, 0},
 	}
-	allNodes := make([][]*Node, 0)
-	for rowIdx, row := range maze {
-		nodes := make([]*Node, 0)
-		for columnIdx, column := range row {
-			nodes = append(nodes, NewNode(rowIdx, columnIdx, column == 0))
-		}
-		allNodes = append(allNodes, nodes)
-	}
-	for rowIdx, row := range allNodes {
-		for columnIdx, column := range row {
-			// 上
-			if rowIdx > 0 {
-				column.AddNeighbor(allNodes[rowIdx-1][columnIdx])
-			}
-			// 下
-			if rowIdx < len(allNodes)-1 {
-				column.AddNeighbor(allNodes[rowIdx+1][columnIdx])
-			}
-			// 左
-			if columnIdx > 0 {
-				column.AddNeighbor(allNodes[rowIdx][columnIdx-1])
-			}
-			// 右
-			if columnIdx < len(allNodes[rowIdx])-1 {
-				column.AddNeighbor(allNodes[rowIdx][columnIdx+1])
-			}
-		}
-	}
-	for _, path := range Search(allNodes[1][1], allNodes[3][1]) {
+	for _, path := range Search(maze, []int{1, 0}, []int{3, 0}) {
 		fmt.Println(path)
 	}
 }
+
