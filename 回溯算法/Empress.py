@@ -1,85 +1,67 @@
-class Node(object):
-    def __init__(self, row, column):
-        self._row = row
-        self._column = column
-        self._next_nodes = []
-        self._cursor = 0
-
-    @property
-    def row(self):
-        return self._row
-
-    @property
-    def column(self):
-        return self._column
-
-    @property
-    def next_nodes(self):
-        return self._next_nodes
-
-    @next_nodes.setter
-    def next_nodes(self, next_nodes):
-        self._next_nodes = next_nodes
-
-    def get_next_node(self):
-        if self._cursor >= len(self._next_nodes):
-            return
-
-        node = self._next_nodes[self._cursor]
-        self._cursor = self._cursor + 1
-        return node
-
-    def __str__(self):
-        return "%s{row=%d, column=%d}" % (
-            self.__class__.__name__,
-            self._row,
-            self._column)
-    __repr__ = __str__
-
-    def reset(self):
-        self._cursor = 0
+from typing import List
 
 
-def search(root, n):
-    stack = [root]
-    count = 0
+def _is_safe(status: List[int], next_: int) -> bool:
+    for row in range(next_):
+        # 在同一列或同一斜线上不安全
+        if status[row] == status[next_] or abs(row - next_) == abs(status[row] - status[next_]):
+            return False
+    return True
 
-    while stack:
-        current_expand_node = stack[-1]
-        next_node = current_expand_node.get_next_node()
-        if not next_node:
-            stack.pop(-1)
-            current_expand_node.reset()
+
+def empress(n: int) -> int:
+    result: int = 0
+    # 第 i 行的皇后所在的列，元素的取值范围是 0 到 n-1
+    status: List[int] = [0] * n
+    # 当前正在处理的行，取值范围是 0 到 n-1
+    current: int = 0
+    while current >= 0:
+        # 当前节点是最终状态
+        if current == n - 1:
+            result += 1
+            status[current] += 1
+            if current > 0:
+                current -= 1
+            elif status[current] >= n:
+                break
             continue
+        next_: int = current + 1
+        # 无法继续前进
+        if status[next_] >= n:
+            status[next_] = 0
+            status[current] += 1
+            if current > 0:
+                current -= 1
+            elif status[current] >= n:
+                break
+            continue
+        # 无法到达最终状态
+        if not _is_safe(status, next_):
+            status[next_] += 1
+            continue
+        # 只有满足条件才会入栈
+        current = next_
 
-        for i in range(1, len(stack)):
-            if stack[i].row == next_node.row or \
-                    stack[i].column == next_node.column or \
-                    abs(stack[i].row - next_node.row) == \
-                    abs(stack[i].column - next_node.column):
-                    break
-        else:
-            if len(stack) == n:
-                count = count + 1
-                print(count)
-                print([node for node in stack[1:]] + [next_node])
-                continue
-            stack.append(next_node)
+    return result
 
 
-def main(n=8):
-    root = Node(0, 0)
-    all_nodes = []
-    for row in range(1, n+1):
-        all_nodes.append(
-            [Node(row, column) for column in range(1, n+1)])
-    root.next_nodes = all_nodes[0]
-    for row in range(len(all_nodes)-1):
-        for node in all_nodes[row]:
-            node.next_nodes = all_nodes[row+1]
+def main() -> None:
+    for n in range(1, 11):
+        print(n, ":", empress(n))
 
-    search(root, n)
+    # Output:
+    # 1 : 1
+    # 2 : 0
+    # 3 : 0
+    # 4 : 2
+    # 5 : 10
+    # 6 : 4
+    # 7 : 40
+    # 8 : 92
+    # 9 : 352
+    # 10 : 724
 
 
 if __name__ == "__main__":
     main()
+
