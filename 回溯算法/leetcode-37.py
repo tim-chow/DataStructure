@@ -91,3 +91,4 @@ class Solution:
                         board[i][j] = str(status[i][j])
             return
         raise RuntimeError("no answer")
+
