@@ -75,3 +75,4 @@ def backtrace(dag: Mapping[str, List[str]]) -> None:
 
 if __name__ == "__main__":
     backtrace({"a": ["b", "c"], "b": ["c", "d"], "c": ["e"], "d": ["f"], "e": ["f"]})
+
